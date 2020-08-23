@@ -1,7 +1,7 @@
 import { ADD_ITEM, REMOVE_ITEM, CLEAR_ITEMS, SET_ITEMS } from './constants';
 
 const initialState =
-  JSON.parse(localStorage.getItem('cart')) || [];
+	localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
 
 export default function reducer(state = initialState, action){
 

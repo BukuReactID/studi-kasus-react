@@ -3,7 +3,9 @@ import { config } from '../config';
 
 export async function getAddress(params){
 
-  let { token } = JSON.parse(localStorage.getItem('auth') || {});
+  let { token } = localStorage.getItem('auth')
+	     ? JSON.parse(localStorage.getItem('auth')) : {};
+
 
   return await axios
     .get(`${config.api_host}/api/delivery-addresses`, {
@@ -19,7 +21,9 @@ export async function getAddress(params){
 
 export async function createAddress(payload){
 
-  let { token } = JSON.parse(localStorage.getItem('auth') || {});
+	let { token } = localStorage.getItem('auth')
+		 ? JSON.parse(localStorage.getItem('auth')) : {};
+
 
   return await axios.post(config.api_host + '/api/delivery-addresses', payload, {
     headers: {

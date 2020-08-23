@@ -11,7 +11,9 @@ export async function login(email, password){
 
 export async function logout(){
 
-  let token = JSON.parse(localStorage.getItem('auth') || {})?.token;
+  let { token } = localStorage.getItem('auth')
+     ? JSON.parse(localStorage.getItem('auth')) : {};
+
 
   return await axios.post(`${config.api_host}/auth/logout`, null, {
     headers: {

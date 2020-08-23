@@ -13,7 +13,8 @@ export async function saveCart(token, cart){
 
 export async function getCart(){
 
-  let { token } = JSON.parse(localStorage.getItem('auth') || {});
+  let { token } = localStorage.getItem('auth')
+			? JSON.parse(localStorage.getItem('auth')) : {};
 
   if(!token) return;
 
