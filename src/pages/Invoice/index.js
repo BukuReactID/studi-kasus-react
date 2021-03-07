@@ -29,6 +29,9 @@ export default function Invoice(){
       .finally(() => setStatus('idle'));
   }, [params]);
 
+  let [initiatingPayment, setInitiating] = React.useState(false);
+  let [requestError, setRequestError] = React.useState(false);
+
   if(error.length){
     return (
       <LayoutOne>
@@ -51,16 +54,17 @@ export default function Invoice(){
 
   let handlePayment = async function(){
 
-    console.log(invoice);
+    setInitiating(true);
 
     let {data: {token}} = await Axios
       .get(`${config.api_host}/api/invoices/${params?.order_id}/initiate-payment`);
 
     if(!token){
-      alert('ERROR');
+      setRequestError(true);
       return;
     }
 
+    setInitiating(false);
     window.snap.pay(token);
   }
 
@@ -92,7 +96,16 @@ export default function Invoice(){
              {config.billing.bank_name} <br/> 
 
              {invoice.payment_status !== "paid" ? <>
-               <Button onClick={handlePayment}> Bayar dengan Midtrans </Button>
+               <Button 
+                 onClick={handlePayment}
+                 disabled={initiatingPayment}
+               > {initiatingPayment ? "Loading ... " : "Bayar dengan Midtrans"} </Button>
+             </>: null}
+
+             {requestError ? <>
+                 <div className="text-red-400">
+                    Terjadi kesalahan saat meminta token untuk pembayaran.
+                 </div>
              </>: null}
 					 </div>}
 				 ]}
