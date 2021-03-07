@@ -1,6 +1,6 @@
 import * as React from 'react'; 
 import { useRouteMatch } from 'react-router-dom';
-import { LayoutOne, Text, Table } from 'upkit';
+import { LayoutOne, Text, Table, Button } from 'upkit';
 import BounceLoader from 'react-spinners/BounceLoader';
 
 import TopBar from '../../components/TopBar';
@@ -8,6 +8,7 @@ import { getInvoiceByOrderId } from '../../api/invoice';
 import { formatRupiah } from '../../utils/format-rupiah';
 import StatusLabel from '../../components/StatusLabel';
 import { config } from '../../config';
+import Axios from 'axios';
 
 export default function Invoice(){
 	let [invoice, setInvoice] = React.useState(null);
@@ -48,6 +49,21 @@ export default function Invoice(){
     </LayoutOne> 
   }
 
+  let handlePayment = async function(){
+
+    console.log(invoice);
+
+    let {data: {token}} = await Axios
+      .get(`${config.api_host}/api/invoices/${params?.order_id}/initiate-payment`);
+
+    if(!token){
+      alert('ERROR');
+      return;
+    }
+
+    window.snap.pay(token);
+  }
+
   return (
 		<LayoutOne>
 			 <TopBar/>
@@ -73,7 +89,11 @@ export default function Invoice(){
 						 {config.owner} <br/>
 						 {config.contact} <br/> 
 						 {config.billing.account_no} <br/> 
-						 {config.billing.bank_name}
+             {config.billing.bank_name} <br/> 
+
+             {invoice.payment_status !== "paid" ? <>
+               <Button onClick={handlePayment}> Bayar dengan Midtrans </Button>
+             </>: null}
 					 </div>}
 				 ]}
 				 columns={[
